@@ -1,0 +1,134 @@
+/* ==========================================================================
+   WOW v5 — Creator Dashboard Base Styles
+   Purpose:
+   - Establish global layout, typography, and palette for creator pages
+   - Simple, legible, Canva-inspired aesthetic
+   ========================================================================== */
+
+/* -------------------------------
+   Global reset
+----------------------------------*/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* -------------------------------
+   Root color variables
+----------------------------------*/
+:root {
+  --wow-bg: #f9fafb;
+  --wow-text-main: #111827;
+  --wow-text-sub: #6b7280;
+  --wow-accent: #ec4899; /* pink-500 */
+  --wow-accent-dark: #db2777;
+  --wow-border: #e5e7eb;
+  --wow-card-bg: #ffffff;
+}
+
+/* -------------------------------
+   Base layout
+----------------------------------*/
+body {
+  font-family: 'Inter', 'Assistant', sans-serif;
+  font-size: 15px;
+  color: var(--wow-text-main);
+  background-color: var(--wow-bg);
+  line-height: 1.6;
+}
+
+#CREATOR_DASHBOARD {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--wow-bg);
+}
+
+/* -------------------------------
+   Topbar
+----------------------------------*/
+#wow_topbar {
+  width: 100%;
+  height: 60px;
+  background-color: #000;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  font-weight: 500;
+}
+
+/* -------------------------------
+   Hero Section
+----------------------------------*/
+#wow_hero {
+  text-align: center;
+  margin-top: 60px;
+  margin-bottom: 60px;
+}
+
+#wow_hero h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--wow-text-main);
+  margin-bottom: 8px;
+}
+
+#wow_hero p {
+  font-size: 16px;
+  color: var(--wow-text-sub);
+}
+
+/* -------------------------------
+   Dashboard Grid
+----------------------------------*/
+#wow_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 32px;
+  width: 90%;
+  max-width: 1100px;
+  margin-bottom: 80px;
+}
+
+.wow_card {
+  background-color: var(--wow-card-bg);
+  border: 1px solid var(--wow-border);
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.wow_card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.wow_card h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.wow_btn {
+  display: inline-block;
+  background-color: var(--wow-accent);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.wow_btn:hover {
+  background-color: var(--wow-accent-dark);
+}

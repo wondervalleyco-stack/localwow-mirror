@@ -1,0 +1,762 @@
+/* =============================================================================
+   WOW Creator Platform — v5_new.css
+   Scope: Creator UI (Dark Mode)
+   Namespace: wow2-
+   Author’s intent: readable, structured, future-proof, and a joy to extend 💚
+   ---------------------------------------------------------------------------
+   CONTENTS
+   0) Tokens (CSS variables)
+   1) Global Reset & Page Contract (direction, scroll, Elementor cleanup)
+   2) Typography Tokens (utility classes for titles/body/labels)
+   3) Layout: Canvas / Sections / Containers / Card Rail Discipline
+   4) Modal Canvas
+   5) Core Components
+      5.1) Info Box
+      5.2) Input Strip (label + input)
+      5.3) Radio Strip
+      5.4) Tabbed Container (tabs + panel)
+      5.5) Strip Table (header + rows)
+      5.6) Buttons & Button Strip
+      5.7) Upload Strip
+   6) Iconography & Action Icons
+   7) Z-Index Stack
+   8) Utilities (spacing, visibility)
+   9) Responsive Rules (≤480px mobile adjustments)
+   ============================================================================ */
+
+
+/* ============================================================================
+   0) TOKENS — the single source of truth for the dark system (wow2-*)
+   ----------------------------------------------------------------------------
+   These are intentionally “wow2” to avoid collisions with existing CSS.
+   ========================================================================== */
+:root {
+  /* Surfaces */
+  --wow2-bg-darker:     #191919;   /* page/canvas */
+  --wow2-bg-dark:       #1f1f1f;   /* cards/containers */
+  --wow2-bg-selected:   #d9d9d9;   /* selected tab / rare highlight */
+
+  /* Borders & dividers */
+  --wow2-border-neutral:#737373;
+  --wow2-border-light:  #b4b4b4;
+
+  /* Text */
+  --wow2-text-white:    #ffffff;   /* titles/labels */
+  --wow2-text-light:    #d9d9d9;   /* body */
+  --wow2-text-main:     #a6a6a6;   /* help/secondary */
+  --wow2-text-muted:    #737373;   /* hints/disabled */
+
+  /* Gradients (for borders/rings) */
+  --wow2-warm-1:        #ff3131;
+  --wow2-warm-2:        #ff914d;
+  --wow2-fresh-1:       #89d957;
+  --wow2-fresh-2:       #c9e265;
+
+  /* Status */
+  --wow2-warn:          #ff914d;
+  --wow2-error:         #ff3131;
+  --wow2-success:       #89d957;
+  --wow2-focus-ring:    #c9e265;
+
+  /* Radii */
+  --wow2-radius-xl:     16px;      /* major panels/modal */
+  --wow2-radius:        10px;      /* standard cards/containers */
+  --wow2-radius-sm:     4px;       /* inner elements (strips, inputs, infobox) */
+  --wow2-radius-xs:     2px;       /* tiny UI (pills, micro buttons) */
+
+  /* Spacing scale */
+  --wow2-space-s:       8px;       /* gutters, small gaps */
+  --wow2-space-m:       12px;      /* default child spacing */
+  --wow2-space-l:       16px;      /* container padding desktop */
+  --wow2-space-xl:      24px;      /* block spacing in forms/modals */
+
+  /* Form layout */
+  --wow2-label-width:   100px;     /* fixed label column in strip rows */
+  --wow2-max-label-width:   150px;     /* fixed label column in strip rows */
+
+  /* Typography (sizes keep your existing look) */
+  --wow2-size-title-xl: 64px;  /* Page Title XL */
+  --wow2-size-title-l:  48px;  /* Page Title L */
+  --wow2-size-sec-xl:   44px;  /* Section XL */
+  --wow2-size-sec-l:    30px;  /* Section L */
+  --wow2-size-sub-h:    24px;  /* Subheader */
+  --wow2-size-sub-s:    18px;  /* Subheader S */
+  --wow2-size-label:    14px;  /* Flex label */
+  --wow2-size-label-2c: 12px;  /* Legacy grid label */
+  --wow2-size-body:     14px;  /* Body / inputs */
+  --wow2-size-body-s:   12px;  /* Dense zones (tables/infobox) */
+  --wow2-size-note:     11px;  /* Notes/micro */
+  --wow2-size-tab:      12px;  /* Tabs text */
+  --wow2-size-btn:      14px;  /* Primary button text */
+  --wow2-size-btn-sm:   12px;  /* Small button text */
+  --wow2-size-btn-micro:8px;   /* Micro inline */
+  --wow2-size-cells:    12px;  /* Table cells */
+  --wow2-size-radio:    12px;  /* Radio labels */
+
+  /* Line-heights */
+  --wow2-lh-tight:      1.2;   /* titles */
+  --wow2-lh-normal:     1.5;   /* body paragraphs */
+  --wow2-lh-compact:    1.3;   /* notes, dense strips */
+}
+
+
+/* ============================================================================
+   1) GLOBAL RESET & PAGE CONTRACT
+   ----------------------------------------------------------------------------
+   Page is the root of truth: nukes Elementor noise, forces RTL, dark bg.
+   ========================================================================== */
+
+/* A light reset — we’re careful not to “fight” WordPress globally */
+.wow2-page, .wow2-page * { box-sizing: border-box; }
+.wow2-page {
+  /* Direction & language: RTL by default */
+  direction: rtl;
+  unicode-bidi: plaintext;
+
+  /* Typography base */
+  font-family: 'Assistant', sans-serif;
+  color: var(--wow2-text-light);
+
+  /* Surface */
+  background: var(--wow2-bg-darker);
+
+  /* Scrolling behavior */
+  overflow-x: hidden;  /* no horizontal scroll */
+  overflow-y: auto;
+
+  /* Clean out Elementor defaults in our scope */
+  padding: 0;
+  margin: 0;
+}
+
+/* Optional LTR islands (e.g., brand/email in top bar) */
+.wow2-ltr { direction: ltr; }
+
+/* Remove unpredictable margins WordPress blocks might inject */
+.wow2-page h1, .wow2-page h2, .wow2-page h3,
+.wow2-page p, .wow2-page ul, .wow2-page ol { margin: 0; }
+
+
+/* ============================================================================
+   2) TYPOGRAPHY TOKENS — utility classes for consistent text
+   ----------------------------------------------------------------------------
+   Only the biggest titles scale on mobile (see Section 9).
+   ========================================================================== */
+.wow2-title-xl   { font-size: var(--wow2-size-title-xl); line-height: var(--wow2-lh-tight);  font-weight: 800; color: var(--wow2-text-light); }
+.wow2-title-l    { font-size: var(--wow2-size-title-l);  line-height: var(--wow2-lh-tight);  font-weight: 800; color: var(--wow2-text-main); }
+.wow2-sec-xl     { font-size: var(--wow2-size-sec-xl);   line-height: var(--wow2-lh-tight);  font-weight: 800; color: var(--wow2-text-light); }
+.wow2-sec-l      { font-size: var(--wow2-size-sec-l);    line-height: var(--wow2-lh-tight);  font-weight: 800; color: var(--wow2-text-light); }
+.wow2-sub-h      { font-size: var(--wow2-size-sub-h);    line-height: var(--wow2-lh-tight);  font-weight: 800; color: var(--wow2-text-main); }
+.wow2-sub-s      { font-size: var(--wow2-size-sub-s);    line-height: var(--wow2-lh-tight);  font-weight: 800; color: var(--wow2-text-main); }
+.wow2-label      { font-size: var(--wow2-size-label);    font-weight: 800; color: var(--wow2-text-white); }
+.wow2-label-2c   { font-size: var(--wow2-size-label-2c); font-weight: 800; color: var(--wow2-text-white); }
+.wow2-body       { font-size: var(--wow2-size-body);     font-weight: 400; color: var(--wow2-text-light); line-height: var(--wow2-lh-normal); }
+.wow2-body-s     { font-size: var(--wow2-size-body-s);   font-weight: 400; color: var(--wow2-text-main);  line-height: var(--wow2-lh-compact); }
+.wow2-note       { font-size: var(--wow2-size-note);     font-weight: 400; color: var(--wow2-text-main);  line-height: var(--wow2-lh-compact); }
+.wow2-tabtext    { font-size: var(--wow2-size-tab);      font-weight: 800; color: var(--wow2-text-white); }
+
+
+/* Smaller red star for required fields */
+.wow2-req {
+  color: var(--wow2-warm-1);
+  font-weight: 700;
+  font-size: 6px;     /* ↓ was inherited; now explicitly small */
+  line-height: 1;
+  margin-inline-start: 4px;
+}
+
+
+
+
+/* ============================================================================
+   3) LAYOUT — Canvas / Sections / Containers / Card Rail
+   ----------------------------------------------------------------------------
+   Canvas is the centered rail; sections group; containers start contrast nesting.
+   ========================================================================== */
+
+/* Canvas — the primary layout rail */
+.wow2-canvas {
+  background: var(--wow2-bg-darker);
+  width: min(1200px, 100%);
+  margin-inline: auto;
+  padding-inline: var(--wow2-space-l);
+  padding-block: var(--wow2-space-s);
+}
+
+/* Section rhythm: 24px desktop / 20px mobile (mobile override below) */
+.wow2-section + .wow2-section { margin-top: 24px; }
+
+/* ensure 24px rhythm between header elements */
+.wow2-section > * + * {
+  margin-top: var(--wow2-space-xl);
+}
+
+
+/* Container / Card — the workhorse block */
+.wow2-container {
+  background: var(--wow2-bg-dark);
+  border: 1px solid var(--wow2-border-neutral);
+  border-radius: var(--wow2-radius-sm);
+  padding: var(--wow2-space-l);
+}
+
+/* Inner child spacing inside containers (default) */
+.wow2-container > * + * { margin-top: var(--wow2-space-m); }
+
+/* Card rail discipline: apply to single-column cards in dashboards/forms */
+.wow2-card-rail { max-width: 600px; min-width: 400px; width: 100%; }
+
+/* Two-column grid for desktop dashboards (auto collapse on mobile) */
+.wow2-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--wow2-space-s);
+}
+
+/* Optional transparent section (logical grouping only; no contrast start) */
+.wow2-section--logical { background: transparent; border: 0; padding: 0; }
+
+
+/* ============================================================================
+   4) MODAL CANVAS — think “mini page”
+   ----------------------------------------------------------------------------
+   Matches spec: darker bg, subtle shadow, inner spacing = 24px stack.
+   ========================================================================== */
+.wow2-modal-canvas {
+  position: relative;
+  width: min(600px, 90vw);
+  background: var(--wow2-bg-darker);
+  border: 1px solid var(--wow2-border-neutral);
+  border-radius: var(--wow2-radius);
+  padding: var(--wow2-space-m);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+}
+
+/* Allow tall modals to scroll inside the panel */
+.wow2-modal-canvas {
+  max-height: calc(100vh - 64px); /* 64px breathing room top/bottom */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* smooth on iOS */
+}
+
+
+
+/* top-level blocks stack with 24px rhythm */
+.wow2-modal-canvas > * + * { margin-top: var(--wow2-space-xl); }
+
+/* Full-screen overlay wrapper (with backdrop) */
+.wow2-modal-viewport {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--wow2-z-modal);
+}
+
+/* Backdrop overlay (dims dashboard behind modal) */
+.wow2-modal-viewport::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px); /* optional, softens background */
+}
+
+
+
+/* ============================================================================
+   5) CORE COMPONENTS
+   ========================================================================== */
+
+/* 5.1) INFO BOX — helper text chip (no icon, by design) */
+.wow2-infobox {
+  background: var(--wow2-bg-dark); /* contrasts with modal canvas by default */
+  border: 1px solid var(--wow2-border-neutral);
+  border-radius: var(--wow2-radius-sm);
+  padding: 10px 12px;
+  color: var(--wow2-text-main);
+  font-size: var(--wow2-size-body-s);
+}
+.wow2-infobox + .wow2-infobox { margin-top: var(--wow2-space-m); }
+
+.wow2-infobox2 {
+  background: var(--wow2-bg-darker); /* contrasts with modal canvas by default */
+  border: 1px solid var(--wow2-border-neutral);
+  border-radius: var(--wow2-radius-sm);
+  padding: 10px 12px;
+  color: var(--wow2-text-main);
+  font-size: var(--wow2-size-body-s);
+}
+.wow2-infobox2 + .wow2-infobox2 { margin-top: var(--wow2-space-m); }
+
+
+
+
+/* 5.2) INPUT STRIP — label + control (one row = one field) */
+.wow2-flexrow {
+  display: flex;
+  align-items: center;
+  gap: var(--wow2-space-m);
+  width: 100%;
+}
+
+.wow2-formlabel {
+  max-width: var(--wow2-max-label-width);
+  min-width: var(--wow2-label-width);
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  font-size: var(--wow2-size-label);
+  font-weight: 800;
+  color: var(--wow2-text-white);
+  /*white-space: nowrap;*/
+  text-align: right;
+}
+
+.wow2-formcontrol { flex: 1 1 auto; }
+
+/* Input (standard) — matches your current look & feel */
+.wow2-input {
+  width: 100%;
+  height: 34px;
+  background: var(--wow2-bg-dark);
+  color: var(--wow2-text-white);
+  border: 1px solid var(--wow2-border-neutral);
+  border-radius: var(--wow2-radius-sm);
+  padding: 6px 10px;
+  font-size: var(--wow2-size-body);
+  outline: none;
+}
+.wow2-input:focus {
+  border-color: var(--wow2-focus-ring);
+}
+
+/* Dense variant (for very tight forms/tables) */
+.wow2-input--dense { font-size: var(--wow2-size-body-s); }
+
+/* States */
+.wow2-input.is-locked { opacity: 0.7; cursor: not-allowed; }
+.wow2-input[data-increase-only="1"] { box-shadow: inset 0 -1px 0 rgba(200,255,180,0.25); }
+
+/* Validation helpers */
+.wow2-help { font-size: var(--wow2-size-body-s); color: var(--wow2-text-main); margin-top: 6px; }
+.wow2-error{ font-size: 13px; color: var(--wow2-error); margin-top: 6px; }
+
+
+
+
+
+
+
+
+
+
+
+
+/* 5.3) RADIO STRIP — label + grouped options */
+.wow2-radio-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--wow2-bg-darker);   /* sit inside same “input” envelope */
+  border: 1px solid var(--wow2-border-neutral);
+  border-radius: var(--wow2-radius-sm);
+  padding: 10px 10px;
+}
+
+/* On modern browsers this sets the dot color to “fresh” */
+.wow2-radio-group input[type="radio"] { accent-color: var(--wow2-success); }
+
+.wow2-radio-label {
+  display: inline-flex;
+  flex-direction: row-reverse; /* RTL: text first, dot second */
+  align-items: center;
+  gap: 6px;
+  color: var(--wow2-text-white);
+  font-size: var(--wow2-size-radio);
+  font-weight: 400;
+}
+
+/* Smaller radio circles */
+.wow2-radio-group input[type="radio"] {
+  width: 10px;      /* ← הקוטר של העיגול */
+  height: 10px;
+  accent-color: var(--wow2-warm-2); /* משמר את הצבע הירוק שלך */
+  transform: translateY(1px);        /* ממרכז אנכי קל */
+}
+
+
+
+/* 5.4) TABBED CONTAINER — tab list + panel */
+.wow2-tabs {
+  display: flex;                 /* was inline-flex → removes baseline gap */
+  gap: var(--wow2-space-s);
+  margin-bottom: 0;              /* no gap under tabs */
+  position: relative;
+  z-index: 2;
+}
+
+/* Unified tab button rule */
+button.wow2-tab-btn {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-width: 40px;
+  padding: 6px 12px;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+
+  background: var(--wow2-bg-dark);
+  color: var(--wow2-text-white);
+  border: 1px solid var(--wow2-border-light);
+  border-radius: var(--wow2-radius-sm) var(--wow2-radius-sm) 0 0;
+  font-weight: 800;
+  font-size: var(--wow2-size-tab);
+
+  /* pull tab border down to overlap panel border by 1px */
+  margin-bottom: -1px;
+}
+
+button.wow2-tab-btn:hover {
+  background:
+    linear-gradient(var(--wow2-bg-dark), var(--wow2-bg-dark)) padding-box,
+    linear-gradient(90deg, var(--wow2-warm-1), var(--wow2-warm-2)) border-box;
+  border: 1px solid transparent;
+}
+
+button.wow2-tab-btn.is-active {
+  color: #111;
+  background: var(--wow2-bg-selected);
+  border-color: var(--wow2-bg-selected);
+}
+
+/* Panel sits flush under tabs */
+.wow2-tabpanel {
+  background: var(--wow2-bg-dark);
+  border: 1px solid var(--wow2-border-light);
+  border-radius: 0 0 var(--wow2-radius-sm) var(--wow2-radius-sm); /* flatten top corners */
+  padding: var(--wow2-space-l);
+  margin-top: 0;  /* ensure no gap above */
+}
+
+
+/* 5.5) STRIP TABLE — header + rows (no tabs here) */
+.wow2-strip {
+  position: relative;
+  border: 1px solid transparent; /* gradient trick */
+  border-radius: var(--wow2-radius-sm);
+  background:
+    linear-gradient(var(--wow2-bg-dark), var(--wow2-bg-dark)) padding-box,
+    linear-gradient(90deg, var(--wow2-warm-1), var(--wow2-warm-2)) border-box; /* default warm; override with [data-tone] */
+  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: 1fr auto; /* right name | left cells */
+  align-items: center;
+  gap: var(--wow2-space-m);
+}
+
+/* Header strip — neutral, no gradient */
+.wow2-strip--header {
+  background: var(--wow2-bg-dark);
+  border: 1px solid var(--wow2-border-neutral);
+  margin-bottom: 12px;
+}
+
+/* Fresh tone override */
+.wow2-strip[data-tone="fresh"] {
+  background:
+    linear-gradient(var(--wow2-bg-dark), var(--wow2-bg-dark)) padding-box,
+    linear-gradient(90deg, var(--wow2-fresh-1), var(--wow2-fresh-2)) border-box;
+}
+
+/* Title & cells (compact) */
+.wow2-strip .wow2-strip-title { color: var(--wow2-text-white); font-weight: 800; font-size: var(--wow2-size-body-s); }
+.wow2-strip .wow2-hcell,
+.wow2-strip .wow2-cell { color: var(--wow2-text-main); font-size: var(--wow2-size-body-s); text-align: center; }
+
+/* A compact 4-cell grid block on the left (adjust per table) */
+.wow2-strip-left {
+  display: grid;
+  grid-template-columns: repeat(4, 50px);
+  align-items: center;
+  justify-content: end;
+}
+.wow2-strip-left > * { border-inline-end: 1px solid var(--wow2-border-neutral); height: 20px; display: flex; align-items: center; justify-content: center; }
+.wow2-strip-left > :last-child { border-inline-end: 0; }
+
+/* Gap between data rows */
+.wow2-strip + .wow2-strip { margin-top: var(--wow2-space-s); }
+
+/* 5.6) BUTTONS & BUTTON STRIP */
+.wow2-btn {
+  width: 180px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: var(--wow2-radius-sm);
+  cursor: pointer;
+  text-decoration: none;
+  padding: 10px 14px;
+  font-size: var(--wow2-size-btn);
+  font-weight: 800;
+  color: var(--wow2-text-light);
+
+  /* ensures the dark center shows correctly */
+  background:
+    linear-gradient(var(--wow2-bg-darker), var(--wow2-bg-darker)) padding-box,
+    linear-gradient(90deg, var(--wow2-warm-1), var(--wow2-warm-2)) border-box;
+  background-clip: padding-box, border-box;
+  background-origin: border-box;
+}
+
+.wow2-btn:hover { filter: brightness(1.05); }
+
+.wow2-btn--fresh {
+  background:
+    linear-gradient(var(--wow2-bg-dark), var(--wow2-bg-dark)) padding-box,
+    linear-gradient(90deg, var(--wow2-fresh-1), var(--wow2-fresh-2)) border-box;
+}
+
+.wow2-btn--sm { font-size: var(--wow2-size-btn-sm); padding: 8px 12px; }
+.wow2-btn--micro {
+  font-size: var(--wow2-size-btn-micro);
+  padding: 4px 6px;
+  border-color: var(--wow2-border-light);
+  background: transparent;
+  color: var(--wow2-text-white);
+}
+
+/* Button Strip: cluster of 1–2 buttons with alignment control */
+.wow2-btnstrip { display: flex; gap: var(--wow2-space-s); }
+.wow2-btnstrip--left   { justify-content: flex-start; }
+.wow2-btnstrip--center { justify-content: center; }
+.wow2-btnstrip--right  { justify-content: flex-end; }
+
+/* 5.7) UPLOAD STRIP — label + upload + optional link input */
+.wow2-upload {
+  display: grid;
+  grid-template-columns: var(--wow2-label-width) 1fr;
+  gap: var(--wow2-space-m);
+  align-items: center;
+}
+.wow2-upload .wow2-upload-actions { display: inline-flex; gap: var(--wow2-space-s); align-items: center; }
+.wow2-upload .wow2-upload-note    { font-size: var(--wow2-size-note); color: var(--wow2-text-main); margin-top: 6px; }
+
+
+/* ============================================================================
+   6) ICONOGRAPHY & ACTION ICONS
+   ----------------------------------------------------------------------------
+   Consistent hit-area & SVG sizing; gradient ring on hover.
+   ========================================================================== */
+.wow2-action-icon {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--wow2-text-white);
+
+  background:
+    linear-gradient(var(--wow2-bg-dark), var(--wow2-bg-dark)) padding-box,
+    linear-gradient(90deg, var(--wow2-warm-1), var(--wow2-warm-2)) border-box;
+  border: 1px solid transparent;
+  transition: transform .12s ease, filter .12s ease, opacity .12s ease;
+}
+.wow2-action-icon:hover { filter: brightness(1.03); }
+.wow2-action-icon:active { transform: scale(0.96); opacity: 0.9; }
+.wow2-action-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+.wow2-action-icon--fresh {
+  background:
+    linear-gradient(var(--wow2-bg-dark), var(--wow2-bg-dark)) padding-box,
+    linear-gradient(90deg, var(--wow2-fresh-1), var(--wow2-fresh-2)) border-box;
+}
+
+
+/* ============================================================================
+   7) Z-INDEX STACK — keep order predictable, avoid 9999 everywhere
+   ========================================================================== */
+:root {
+  --wow2-z-base:     0;
+  --wow2-z-sticky:   10;
+  --wow2-z-popover:  1000; /* icon menu / small overlays */
+  --wow2-z-backdrop: 8990;
+  --wow2-z-modal:    9000;
+}
+
+.wow2-z-base     { z-index: var(--wow2-z-base); }
+.wow2-z-sticky   { z-index: var(--wow2-z-sticky); }
+.wow2-z-popover  { z-index: var(--wow2-z-popover); }
+.wow2-z-backdrop { z-index: var(--wow2-z-backdrop); }
+.wow2-z-modal    { z-index: var(--wow2-z-modal); }
+
+
+/* ============================================================================
+   8) UTILITIES — small helpers you’ll use daily
+   ========================================================================== */
+
+/* Spacing helpers (margin top) */
+.wow2-mt-s  { margin-top: var(--wow2-space-s); }
+.wow2-mt-m  { margin-top: var(--wow2-space-m); }
+.wow2-mt-l  { margin-top: var(--wow2-space-l); }
+.wow2-mt-xl { margin-top: var(--wow2-space-xl); }
+
+/* Padding helpers */
+.wow2-p-s   { padding: var(--wow2-space-s); }
+.wow2-p-m   { padding: var(--wow2-space-m); }
+.wow2-p-l   { padding: var(--wow2-space-l); }
+.wow2-p-xl  { padding: var(--wow2-space-xl); }
+
+/* Alignment helpers for RTL world */
+.wow2-right { text-align: right; }
+.wow2-left  { text-align: left; }
+
+/* Visibility */
+.wow2-hidden { display: none !important; }
+
+/* Width helpers */
+.wow2-full  { width: 100%; }
+
+
+/* ============================================================================
+   9) RESPONSIVE RULES — mobile polish (≤480px)
+   ----------------------------------------------------------------------------
+   • Canvas is full-bleed (no side padding)
+   • Titles scale down (only the largest)
+   • Dashboard grids collapse to 1 column
+   • Section rhythm tightens
+   • Tabs scroll horizontally
+   ========================================================================== */
+@media (max-width: 480px) {
+  .wow2-canvas { padding-inline: 0; }
+
+  .wow2-grid-2col { grid-template-columns: 1fr; }
+
+  .wow2-section + .wow2-section { margin-top: 20px; }
+
+  /* Title scale-downs */
+  .wow2-title-xl { font-size: 48px; }
+  .wow2-title-l  { font-size: 36px; }
+  .wow2-sec-xl   { font-size: 32px; }
+  .wow2-sec-l    { font-size: 24px; }
+
+  /* Tabs: horizontal scroll, no wrap, safe gutters */
+  .wow2-tabs {
+    overflow-x: auto;
+    white-space: nowrap;
+    scroll-snap-type: x proximity;
+    padding-inline: var(--wow2-space-s);
+  }
+  .wow2-tabs > * { scroll-snap-align: start; }
+
+  /* Card rail discipline: full width when viewport is <400px */
+  .wow2-card-rail { min-width: 0; }
+}
+
+
+
+/* ============================================================================
+   5.5) STRIP TABLE — header + rows (title on right, fixed cells on left)
+   ========================================================================== */
+
+/* Base row: warm gradient ring, grid = right (title) | left (cells) */
+.wow2-strip {
+  position: relative;
+  border: 1px solid transparent; /* gradient trick */
+  border-radius: var(--wow2-radius-sm);
+  background:
+    linear-gradient(var(--wow2-bg-dark), var(--wow2-bg-dark)) padding-box,
+    linear-gradient(90deg, var(--wow2-warm-1), var(--wow2-warm-2)) border-box;
+  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: 1fr auto; /* right title | left cells */
+  align-items: center;
+  gap: var(--wow2-space-m);
+}
+
+/* Header row: neutral border, solid card (no gradient ring) */
+.wow2-strip--header {
+  background: var(--wow2-bg-dark);
+  border: 1px solid var(--wow2-border-neutral);
+  margin-bottom: 12px;
+}
+
+/* Optional: fresh tone ring for data rows */
+.wow2-strip[data-tone="fresh"] {
+  background:
+    linear-gradient(var(--wow2-bg-dark), var(--wow2-bg-dark)) padding-box,
+    linear-gradient(90deg, var(--wow2-fresh-1), var(--wow2-fresh-2)) border-box;
+}
+
+/* Right side (title/name) */
+.wow2-strip-right .wow2-name {
+  font-family: 'Assistant', sans-serif;
+  font-weight: 800;
+  color: var(--wow2-text-white);
+  font-size: var(--wow2-size-body-s);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Right side (header label) */
+.wow2-strip--header .wow2-strip-right .wow2-hcell {
+  font-size: var(--wow2-size-body-s);
+  font-weight: 800;
+  color: var(--wow2-text-white);
+}
+
+/* Left side: fixed-width cells (adjust repeat(N, 50px) per table as needed) */
+.wow2-strip-left {
+  display: grid;
+  grid-template-columns: repeat(4, 50px);
+  align-items: center;
+  justify-content: end;
+  gap: 0;
+}
+
+/* Cells (header & body): centered with RTL dividers */
+.wow2-strip-left .wow2-hcell,
+.wow2-strip-left .wow2-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 20px;
+  border-inline-end: 1px solid var(--wow2-border-neutral);
+}
+
+/* No divider on last cell */
+.wow2-strip-left > :last-child { border-inline-end: 0; }
+
+/* Base cell typography */
+.wow2-hcell,
+.wow2-cell {
+  font-family: 'Assistant', sans-serif;
+  font-size: var(--wow2-size-body-s);
+  color: var(--wow2-text-main);
+}
+
+/* Header cell color/weight */
+.wow2-strip--header .wow2-hcell {
+  color: var(--wow2-text-light);
+  font-weight: 400;
+}
+
+/* Action column (last cell) width helper */
+.wow2-hcell--action,
+.wow2-cell--action { width: 52px; text-align: left; }
+
+/* Gap between consecutive data rows */
+.wow2-strip + .wow2-strip { margin-top: var(--wow2-space-s); }

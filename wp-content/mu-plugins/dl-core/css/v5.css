@@ -1,0 +1,901 @@
+/* =====================================================================
+   WOW Dashboard — Design System v1.1
+   Single source of truth for creator UI
+   - Tokens (colors, radii, spacing)
+   - Structure (page / canvas / grid / cards)
+   - Topbar & Typography
+   - Buttons
+   - Modal
+   - Reusable Tab-Table (strip rows)
+   ===================================================================== */
+
+
+/* =========================
+   0) Tokens (CSS variables)
+   ========================= */
+:root {
+  /* Surfaces */
+  --wow-bg:         #191919;     /* page */
+  --wow-bg-card:    #1f1f1f;     /* cards, panels */
+  --wow-border:     #737373;     /* neutral outline */
+  --wow-white:      #ffffff;
+
+  /* Text */
+  --wow-text-strong:#d9d9d9;     /* headings, labels */
+  --wow-text-main:  #a6a6a6;     /* body */
+  --wow-text-white: #ffffff;     /* on dark bg */
+
+  /* Radius & spacing */
+  --wow-radius:     10px;
+  --wow-radius-sm:  4px;
+  --wow-gap-desktop:8px;
+  --wow-gap-mobile: 8px;
+
+  /* Brand gradients */
+  --wow-gradient-fresh-1:#89d957;
+  --wow-gradient-fresh-2:#c9e265;
+  --wow-gradient-warm-1: #ff3131;
+  --wow-gradient-warm-2: #ff914d;
+
+  /* Form layout */
+  --label_width: 100px;
+}
+
+
+/* =========================
+   1) Global Reset
+   ========================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+
+/* =========================================================
+   2) Structure: page / canvas / sections (centered, responsive)
+   ========================================================= */
+.wow_page,
+.wow_canvas,
+.wow_dash_container,
+.wow_dash_hero,
+.wow_topbar_container {
+  width: min(1200px, 100%);
+  margin-inline: auto;
+}
+
+@media (max-width: 799px) {
+  .wow_page,
+  .wow_canvas,
+  .wow_dash_container,
+  .wow_dash_hero,
+  .wow_topbar_container {
+    width: min(600px, 100%);
+  }
+}
+
+/* Page wrapper */
+.wow_page {
+  background: var(--wow-bg);
+  border: 0;
+  padding: 0;
+}
+
+/* Canvas area that holds sections */
+.wow_canvas {
+  background: var(--wow-bg);
+  border: 0;
+  padding-inline: 0px;
+  padding-block: 8px;
+}
+
+/* Vertical rhythm between sections */
+.wow_section + .wow_section { margin-top: 24px; }
+@media (max-width: 799px) { .wow_section + .wow_section { margin-top: 28px; } }
+
+
+/* =========================
+   3) Topbar
+   ========================= */
+/* Email-only topbar for now */
+#wow_topbar{
+  background: var(--wow-bg-card);
+  border: 1px solid var(--wow-border);
+  border-radius: var(--wow-radius) var(--wow-radius) 0 0;
+  padding: 18px 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  direction: ltr;            /* keep “localWOW” word order */
+  white-space: nowrap;
+  background-clip: padding-box;
+  overflow: hidden;
+}
+
+.wow_logo { direction: ltr; }
+
+.wow_account {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+.wow_logout_icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  cursor: pointer;
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+}
+.wow_logout_icon svg { width: 14px; height: 14px; stroke: currentColor; }
+.wow_logout_icon:hover { opacity: 1; }
+.wow_logout_icon:active { opacity: 0.8; }
+
+
+/* ---------- Brand & account tokens ---------- */
+.wow_logo {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.wow_brand_font {
+  font-family: 'Assistant', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--wow-text-strong);
+}
+.wow_brand_font_white {
+  font-family: 'Assistant', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: #ffffff;
+}
+.wow_brand_font_green {
+  font-family: 'Assistant', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  background: linear-gradient(90deg, var(--wow-gradient-fresh-1), var(--wow-gradient-fresh-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.wow_account_name_font {
+  font-family: 'Assistant', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.wow_logout_btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  padding: 6px 8px;
+}
+.wow_logout_btn:hover { opacity: 0.9; }
+.wow_logout_btn:active { opacity: 0.8; }
+.wow_logout_btn .wow_icon { width: 12px; height: 12px; line-height: 1; }
+
+
+/* =========================
+   4) Hero
+   ========================= */
+.wow_dash_hero {
+  background: var(--wow-bg);
+  border: 0;
+  padding: 16px;
+  text-align: right;
+}
+
+
+/* =========================
+   5) Dashboard Grid & Cards
+   ========================= */
+.wow_grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--wow-gap-desktop);
+}
+@media (max-width: 799px) {
+  .wow_grid { grid-template-columns: 1fr; gap: var(--wow-gap-mobile); }
+}
+
+.wow_dash_container {
+  background: var(--wow-bg-card);
+  border: 1px solid var(--wow-border);
+  border-radius: var(--wow-radius);
+  padding: 16px 16px 24px 16px;
+  direction: rtl;
+  text-align: right;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* keep header & button natural; table can stretch itself */
+  gap: 40px;
+}
+
+
+/* =========================
+   6) Typography Tokens
+   ========================= */
+.wow_fat_h {
+  font-family: 'Assistant', sans-serif;
+  font-size: 44px;
+  font-weight: 800;
+  color: var(--wow-text-main);
+  direction: rtl;
+}
+.wow_fat_h_m {
+  font-family: 'Assistant', sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--wow-text-main);
+  direction: rtl;
+}
+.wow_page_header_h {
+  font-family: 'Assistant', sans-serif;
+  font-size: 64px;
+  font-weight: 800;
+  color: var(--wow-text-strong);
+  direction: rtl;
+}
+.wow_page_header_h_m {
+  font-family: 'Assistant', sans-serif;
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--wow-text-strong);
+  direction: rtl;
+}
+.wow_page_sub_header_h {
+  font-family: 'Assistant', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--wow-text-main);
+  direction: rtl;
+}
+.wow_page_sub_header_h_m {
+  font-family: 'Assistant', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--wow-text-main);
+  direction: rtl;
+}
+
+
+/* =========================
+   7) Buttons
+   ========================= */
+.wow_btn_dash {
+  width: 180px;
+  height: 40px;
+  border: 1px solid transparent;
+  border-radius: var(--wow-radius-sm);
+  background:
+    linear-gradient(#1f1f1f, #1f1f1f) padding-box,
+    linear-gradient(90deg, var(--wow-gradient-warm-1), var(--wow-gradient-warm-2)) border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+}
+.wow_btn_dash:hover { filter: brightness(1.05); }
+
+.wow_btn_dash_txt_h {
+  font-family: 'Assistant', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: #d9d9d9;
+  direction: rtl;
+}
+
+
+/* =========================
+   8) Utilities
+   ========================= */
+.wow_full { width: 100%; }
+
+/* Ensure the Elements tab-table stretches inside its card */
+#wow_mount_elements { align-self: stretch; width: 100%; }
+
+#wow_mount_events { align-self: stretch; width: 100%; }
+
+/* ==============================
+   9) Modal (Create New Element)
+   ============================== */
+#wow_modal {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+}
+.wow_modal_backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(3px);
+}
+.wow_modal_panel {
+  position: relative; z-index: 1;
+  width: 600px; max-width: 90%;
+  background: var(--wow-bg);
+  border: 1px solid var(--wow-border);
+  border-radius: var(--wow-radius);
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+
+}
+
+/* put this in v5.css */
+.wow_modal_panel > * + * {
+  margin-top: 24px;     /* every child after the first gets 24px on top */
+}
+
+.wow_input {
+  width: 100%;
+  background: var(--wow-bg-card); color: #fff;
+  border: 1px solid var(--wow-border);
+  border-radius: var(--wow-radius-sm);
+  padding: 6px 10px;
+  font-family: 'Assistant', sans-serif; font-size: 14px;
+  outline: none;
+}
+.wow_input:focus { border-color: var(--wow-gradient-fresh-1); }
+.wow_help_text  { font-family: 'Assistant', sans-serif; font-size: 12px; color: var(--wow-text-main); margin-top: 6px; }
+.wow_error_text { font-family: 'Assistant', sans-serif; font-size: 13px; color: #ff7a59; }
+
+
+
+
+
+/* ===========================================================
+   10) Reusable Tab-Table (strip rows)
+   Pattern used by: Elements / Events / etc.
+   - Tabs with bracketed counts
+   - Flat-top panel attached to active tab
+   - Header strip + strip rows with gradient borders
+   =========================================================== */
+
+/* Wrapper */
+.wow_tabtable {
+  direction: rtl;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Tabs row */
+.wow_tablist {
+  display: inline-flex;
+  gap: 8px;
+  margin-bottom: -1px;
+}
+
+/* ---- Tabs (explicitly reset any 3rd-party button styles) ---- */
+button.wow_tab_btn {
+  all: unset;                         /* wipe Elementor/Tailwind button defaults */
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;                  /* tab height */
+  cursor: pointer;
+  user-select: none;
+
+  /* Our design tokens */
+  background: var(--wow-bg-card);
+  color: var(--wow-text-white);
+  border: 1px solid var(--wow-white); /* neutral light outline */
+  border-radius: var(--wow-radius-sm) var(--wow-radius-sm) 0 0; /* top-only */
+  font-family: 'Assistant', sans-serif;
+  font-weight: 800;
+}
+
+/* Bracketed counter (text is injected as “[n]” from HTML) */
+button.wow_tab_btn .wow_tab_count {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  line-height: 1;
+  border: 0;
+  border-radius: 0;
+  background: var(--wow-bg-card);
+  color: var(--wow-text-white);
+}
+
+/* Active tab */
+button.wow_tab_btn.is-active {
+  color: var(--wow-bg);
+  background: var(--wow-white);
+  border-color: var(--wow-white);
+  border-bottom-color: var(--wow-white); /* seamless seam to panel */
+}
+button.wow_tab_btn.is-active .wow_tab_count {
+  background: transparent;
+  border: 0;
+  color: #111;
+  font-weight: 800;
+}
+
+/* Hover (only when not active) — warm gradient border */
+button.wow_tab_btn:not(.is-active):hover {
+  background:
+    linear-gradient(var(--wow-bg-card), var(--wow-bg-card)) padding-box,
+    linear-gradient(90deg, var(--wow-gradient-warm-1), var(--wow-gradient-warm-2)) border-box;
+  border: 1px solid transparent;      /* show gradient ring */
+  color: var(--wow-text-strong);
+}
+
+/* Focus (no red outlines, no box shadows) */
+button.wow_tab_btn:focus,
+button.wow_tab_btn:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Panel under tabs (flat top) */
+.wow_tabpanel {
+  background: var(--wow-bg-card);
+  border: 1px solid var(--wow-white);                     
+  border-radius: 0 0 0 0;
+  padding: 12px;
+}
+
+/* Optional tools bar (filters, search) */
+.wow_toolsbar { margin-bottom: 10px; }
+
+/* Strips (header & rows) */
+.wow_strip {
+  position: relative;
+  border: 1px solid transparent;
+  border-radius: var(--wow-radius-sm);
+  background:
+    linear-gradient(var(--wow-bg-card), var(--wow-bg-card)) padding-box,
+    linear-gradient(90deg, var(--wow-gradient-warm-1), var(--wow-gradient-warm-2)) border-box;
+  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: 1fr auto;    /* right (name) | left (cells) */
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.wow_strip--header .wow_strip_right .wow_hcell {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--wow-text-white);
+}
+
+/* Switch border tone to “fresh” when desired */
+.wow_strip[data-tone="fresh"] {
+  background:
+    linear-gradient(var(--wow-bg-card), var(--wow-bg-card)) padding-box,
+    linear-gradient(90deg, var(--wow-gradient-fresh-1), var(--wow-gradient-fresh-2)) border-box;
+}
+
+/* Header strip */
+.wow_strip--header {
+  background: var(--wow-bg-card);
+  border: 1px solid var(--wow-border);
+  margin-bottom: 12px;
+}
+
+/* Empty strip */
+.wow_strip--empty { opacity: .8; }
+
+/* Right side: big name */
+.wow_strip_right .wow_name {
+font-family: 'Assistant', sans-serif;
+font-weight: 800;
+color: var(--wow-text-white);
+font-size: 12px;
+line-height: 1.2;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
+/* Left side: fixed-width cells */
+.wow_strip_left {
+display: grid;
+grid-template-columns: repeat(4, 50px);
+align-items: center;
+justify-content: end;
+gap: 0;
+}
+
+/* center content in header/data cells */
+.wow_strip_left .wow_hcell,
+.wow_strip_left .wow_cell {
+display: flex;
+align-items: center;
+justify-content: center;
+text-align: center;
+height: 20px; /* tweak if needed */
+border-inline-end: 1px solid var(--wow-border); /* separator on the right (RTL-aware) */
+}
+
+/* remove separator on the last cell */
+.wow_strip_left > :last-child {
+border-inline-end: 0;
+}
+
+.wow_hcell,
+.wow_cell {
+  font-family: 'Assistant', sans-serif;
+  font-size: 12px;
+  color: var(--wow-text-main);
+}
+.wow_strip--header .wow_hcell {
+  color: var(--wow-text-strong);
+  font-weight: 400;
+}
+
+/* Action cell / icon */
+.wow_hcell--action,
+.wow_cell--action { width: 52px; text-align: left; }
+
+
+.wow_action_icon{
+  all: unset;                          /* nuke 3rd-party styles */
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:28px; height:28px;
+  cursor:pointer;
+  color: var(--wow-text-white);
+  border:0; background:transparent;    /* no square border */
+  border-radius: 9999px;               /* circle hit-area */
+  transition: transform .1s ease, opacity .12s ease;
+}
+.wow_action_icon:hover{ opacity:.95; }
+.wow_action_icon:active{ transform:scale(.96); }
+.wow_action_icon svg{ width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:2; }
+
+/* warm gradient ring on hover */
+.wow_action_icon:hover{
+  background:
+    linear-gradient(var(--wow-bg-card), var(--wow-bg-card)) padding-box,
+    linear-gradient(90deg, var(--wow-gradient-warm-1), var(--wow-gradient-warm-2)) border-box;
+  border:1px solid transparent;        /* reveals the gradient ring */
+}
+
+/* ===========================================================
+   ICON MENU (shared across all tables)
+   =========================================================== */
+
+#wow_icon_menu {
+  position: absolute;
+  z-index: 2147483647;
+  display: none;
+  background: var(--wow-bg-card);
+  border: 1px solid var(--wow-border);
+  border-radius: var(--wow-radius-sm);
+  padding: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  flex-direction: row;
+  gap: 6px;
+}
+
+#wow_icon_menu button {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--wow-border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--wow-text-white);
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+#wow_icon_menu button:hover {
+  opacity: 0.9;
+  border-color: var(--wow-white);
+}
+
+#wow_icon_menu button:active {
+  transform: scale(0.96);
+}
+
+#wow_icon_menu svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 1.75;
+  stroke: currentColor;
+  fill: none;
+}
+
+/* =====================================================================
+   WOW — Edit Element Form (CSS additions)
+   Drop these at the END of v5.css (won’t affect existing screens)
+   ===================================================================== */
+
+/* -------------------------------------------------
+   A) 2-column form grid (label | control)
+   ------------------------------------------------- */
+.wow_formgrid {
+  display: grid;
+  grid-template-columns: 220px 1fr; /* label column | control column */
+  gap: 10px 12px;                    /* row gap | col gap */
+  align-items: center;
+  margin-top: 10px;
+}
+
+.wow_formlabel {
+  font-family: 'Assistant', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--wow-text-strong);
+  text-align: right;      /* RTL */
+  white-space: nowrap;
+}
+
+.wow_formcontrol {
+  /* controls already use .wow_input; this wrapper keeps alignment tidy */
+  display: block;
+}
+
+/* Slightly denser inputs in forms inside modals (visual refinement) */
+#wow_modal .wow_input {
+  min-height: 34px;
+}
+
+/* -------------------------------------------------
+   B) Lock visuals (badges + locked inputs)
+   ------------------------------------------------- */
+.wow_lock_badge {
+  display: inline-block;
+  margin-inline-start: 8px;
+  padding: 2px 6px;
+  border: 1px solid var(--wow-border);
+  border-radius: 6px;
+  font-family: 'Assistant', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--wow-text-main);
+  background: #242424;
+  vertical-align: middle;
+}
+
+.wow_input.is-locked,
+select.wow_input.is-locked,
+textarea.wow_input.is-locked {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Increase-only hint (optional underline). Remove if you don’t want it */
+.wow_input[data-increase-only="1"] {
+  box-shadow: inset 0 -1px 0 rgba(200,255,180,0.25);
+}
+
+/* -------------------------------------------------
+   C) Action icon button (rows in Tickets/Vouchers/Posts)
+   - No square border by default
+   - Warm gradient ring on hover (same pattern as tabs)
+   ------------------------------------------------- */
+.wow_action_icon {
+  all: unset;  /* nuke Elementor/Tailwind button defaults */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+
+  /* no border at rest */
+  border: 1px solid transparent;
+
+  /* background layer + (hidden) gradient border layer */
+  background:
+    linear-gradient(var(--wow-bg-card), var(--wow-bg-card)) padding-box,
+    linear-gradient(90deg, var(--wow-gradient-warm-1), var(--wow-gradient-warm-2)) border-box;
+
+  color: var(--wow-text-white);
+  cursor: pointer;
+  transition: transform .12s ease, filter .12s ease, opacity .12s ease, border-color .12s ease;
+}
+
+/* show the gradient ring on hover; kill any pink/inherited hover */
+.wow_action_icon:hover {
+  filter: brightness(1.03);
+  border-color: transparent; /* keep border transparent to reveal gradient border layer */
+}
+
+/* active press feedback */
+.wow_action_icon:active {
+  transform: scale(0.96);
+  opacity: 0.9;
+}
+
+/* ensure SVGs inside icons inherit color cleanly */
+.wow_action_icon svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+}
+
+/* -------------------------------------------------
+   D) Strip-table header/body cell alignment tweaks (edit form lists)
+   (Keeps the compact, 50px cells you liked)
+   ------------------------------------------------- */
+.wow_strip_left .wow_hcell,
+.wow_strip_left .wow_cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 20px;
+  border-inline-end: 1px solid var(--wow-border);
+}
+.wow_strip_left > :last-child {
+  border-inline-end: 0;
+}
+.wow_strip_left {
+  display: grid;
+  grid-template-columns: repeat(4, 50px); /* adjust per table where needed */
+  align-items: center;
+  justify-content: end;
+  gap: 0;
+}
+
+
+/* ===== Reusable form pieces (tiny, generic) ===== */
+
+/* spacing wrapper for each row/box */
+.wow_block { margin: 12px 0; }
+
+/* Info box — full-width chip with subtle border (works in modal & dash) */
+.wow_infobox,
+#wow_modal .wow_infobox {
+  display: block;
+  width: 100%;
+  background: var(--wow-bg-card);             
+  border: 1px solid var(--wow-border);
+  border-radius: var(--wow-radius-sm);
+  padding: 10px 12px;
+  margin: 12px 0;                    /* small top/bottom spacing */
+  color: var(--wow-text-main);       /* light grey copy */
+  font-size: 12px;                   /* spec: 10px */
+  font-weight: 400;
+  direction: rtl;                    /* Hebrew */
+  text-align: right;
+  box-sizing: border-box;
+}
+
+
+/* section container (slightly lighter panel) */
+.wow_section_box {
+  background: var(--wow-bg-card);           /* #1f1f1f */
+  border: 1px solid var(--wow-border);
+  border-radius: var(--wow-radius-sm);
+  padding: 8px;
+}
+
+/* small variant for inputs when needed (labels stay as-is) */
+.wow_input_sm { font-size: 12px; }
+
+/* radio strip text size */
+.wow_radio_label { font-size: 10px; font-weight: 400; color: var(--wow-text-white); }
+
+/* tiny note line */
+.wow_note_strip {
+  color: var(--wow-text-main);
+  font-size: 10px;
+}
+
+/* little star (required) next to labels) */
+.wow_req { color: var(--wow-text-strong); margin-inline-start: 6px; }
+
+
+/* =====================================================
+   FLEX FORM INPUT — generic row for inputs or radios
+   ===================================================== */
+
+/* Main container (replaces 2-column grid) */
+.wow_flexform_input {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+  direction: rtl;               /* Hebrew layout */
+}
+
+/* Label area (fixed width) */
+.wow_flexform_input .wow_formlabel {
+  width: var(--label_width);
+  min-width: var(--label_width);
+  text-align: right;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  font-family: 'Assistant', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--wow-text-white);
+  white-space: nowrap;
+}
+
+/* Input container (takes remaining space) */
+.wow_flexform_input .wow_formcontrol {
+  flex: 1 1 auto;
+  display: block;
+}
+
+/* Warm small star */
+.wow_flexform_input .wow_req {
+  font-size: 8px;
+  line-height: 1;
+  color: var(--wow-gradient-warm-1);
+}
+
+/* Optional — consistent input sizing */
+.wow_input { 
+  min-height: 34px;
+  box-sizing: border-box;
+}
+
+
+/* =========================
+   RADIO GA_GA
+   ========================= */
+
+
+/* Radio group sits INSIDE the same .wow_input box */
+.wow_radio_group {
+  display: flex;
+  align-items: center;
+  gap: 24px;                 /* space between options */
+  padding: 6px 10px;         /* match .wow_input internal feel */
+}
+
+/* Option label: RTL text then the dot (row-reverse) */
+.wow_radio_label {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;           /* you asked 10px for radio labels */
+  font-weight: 400;
+  color: var(--wow-text-white);
+}
+
+/* Tidy the native radio size a touch */
+.wow_radio_label input[type="radio"] {
+  width: 14px;
+  height: 14px;
+}
+
+
+
+
+
+/* =========================
+   End of file. 
+   ========================= */
